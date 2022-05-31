@@ -58,7 +58,6 @@ class API {
           });
         }
       });
-      currencyBox.close();
     } else {
       await connectAPI(currencyBox);
       currencyBox.keys.forEach((element) {
@@ -68,7 +67,6 @@ class API {
           });
         }
       });
-      currencyBox.close();
     }
     return curObject;
   }

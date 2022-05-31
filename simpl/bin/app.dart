@@ -1,3 +1,5 @@
+import 'package:hive/hive.dart';
+
 import 'api.dart';
 import 'dart:io';
 import 'package:colorize/colorize.dart';
@@ -8,13 +10,14 @@ class App {
   API api = API();
   currencyConverter() async {
     var currencyTypes = await api.curType();
-    var date = DateTime.now();
+    var date =
+        "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}";
     print(Colorize('''
 ------------------------------
 |       Valyuta kursi        |
+|         $date          |
 |                            |
 |   AQSH dollari hisobida    |
-|    $date                   |
 ------------------------------
 ''').green());
     serviceView(currencyTypes);
@@ -39,7 +42,8 @@ class App {
     services(currencyTypes);
   }
 
-  void services(currencyTypes) {
+  void services(currencyTypes) async{
+    var box = await Hive.openBox("currency_box");
     String valyutaXato = "Valyuta turi xato kiritildi 🚫";
     String serviceType = stdin.readLineSync()!;
     if (serviceType == "1") {
@@ -109,10 +113,19 @@ class App {
       }
     } else if (serviceType == "5") {
       utils.clear();
+      box.close();
       exit(0);
     } else {
       utils.printModel(utils.redColor(valyutaXato));
-      serviceView(currencyTypes);
+      utils.printModel2(utils.redColor(
+          "| Davom etish uchun Enter | Chiqish uchun istalgan boshqa tugmani bosing |"));
+      var check = stdin.readLineSync()!;
+      if (check.isEmpty) {
+        serviceView(currencyTypes);
+      } else {
+        box.close();
+        exit(0);
+      }
     }
   }
 }
