@@ -15,7 +15,8 @@ class App {
     print(Colorize('''
 ------------------------------
 |       Valyuta kursi        |
-|         $date          |
+
+          $date           
 |                            |
 |   AQSH dollari hisobida    |
 ------------------------------

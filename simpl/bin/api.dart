@@ -34,7 +34,7 @@ class API {
       for (int i = 0; i < curCode.length; i++) {
         CurrencyModel object =
             CurrencyModel(curName: curName[i], price: price[i], curIcon: curIcon[i]);
-        await currencyBox.put(curCode[i], jsonEncode(object.toJson()));
+        await currencyBox.put(curCode[i], object.toJson());
       }
       await currencyBox.put("date",
           "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}");
@@ -51,14 +51,14 @@ class API {
     if (currencyBox.get("date") == today) {
       currencyBox.keys.forEach((element) {
         if (element != "date") {
-          curObject.addAll({element: jsonDecode(jsonDecode(currencyBox.get(element)))});
+          curObject.addAll({element: CurrencyModel.fromJson(currencyBox.get(element)).toMap()});
         }
       });
     } else {
       await connectAPI(currencyBox);
       currencyBox.keys.forEach((element) {
         if (element != "date") {
-          curObject.addAll({element: jsonDecode(jsonDecode(currencyBox.get(element)))});
+          curObject.addAll({element: CurrencyModel.fromJson(currencyBox.get(element)).toMap()});
         }
       });
     }

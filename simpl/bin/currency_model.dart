@@ -12,13 +12,13 @@ class CurrencyModel {
     return 'CurrencyModel(curName: $curName, curIcon: $curIcon, price: $price)';
   }
 
-  factory CurrencyModel.fromMap(Map<String, dynamic> data) => CurrencyModel(
+  factory CurrencyModel.fromMap(Map data) => CurrencyModel(
         curName: data['curName'] as String?,
         curIcon: data['curIcon'] as String?,
         price: (data['price'] as num?)?.toDouble(),
       );
 
-  Map<String, dynamic> toMap() => {
+  Map toMap() => {
         'curName': curName,
         'curIcon': curIcon,
         'price': price,
