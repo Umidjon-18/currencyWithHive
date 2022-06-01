@@ -42,7 +42,7 @@ class App {
     services(currencyTypes);
   }
 
-  void services(currencyTypes) async{
+  void services(currencyTypes) async {
     var box = await Hive.openBox("currency_box");
     String valyutaXato = "Valyuta turi xato kiritildi 🚫";
     String serviceType = stdin.readLineSync()!;
@@ -52,7 +52,7 @@ class App {
       if (currencyTypes.containsKey(currencyType)) {
         utils.clear();
         utils.printModel(utils.greenColor(
-            "1 USD ${currencyTypes[currencyType]} $currencyType ✅"));
+            "1 USD ${currencyTypes[currencyType]["price"]} $currencyType ✅"));
         serviceView(currencyTypes);
       } else {
         utils
@@ -69,7 +69,7 @@ class App {
       }
       utils.clear();
       utils.printModel(utils.greenColor(
-          "${amountCur[0]} ${amountCur[1]}ining USDdagi qiymati ${(double.parse(amountCur[0]) / currencyTypes[amountCur[1]]).toStringAsFixed(3)} \$  ✅"));
+          "${amountCur[0]} ${amountCur[1]}ining USDdagi qiymati ${(double.parse(amountCur[0]) / currencyTypes[amountCur[1]]["price"]).toStringAsFixed(3)} \$  ✅"));
       serviceView(currencyTypes);
     } else if (serviceType == "3") {
       utils.printModel(
@@ -80,7 +80,7 @@ class App {
         if (currencyTypes.containsKey(valyutalar[1])) {
           utils.clear();
           utils.printModel(utils.greenColor(
-              "${valyutalar[0]} ning ${valyutalar[1]} ga nisbati ${(currencyTypes[valyutalar[1]] / currencyTypes[valyutalar[0]]).toStringAsFixed(3)}  ✅"));
+              "${valyutalar[0]} ning ${valyutalar[1]} ga nisbati ${(currencyTypes[valyutalar[1]]["price"] / currencyTypes[valyutalar[0]]["price"]).toStringAsFixed(3)}  ✅"));
           serviceView(currencyTypes);
         } else {
           utils.printModel(utils.redColor(valyutaXato));
@@ -101,7 +101,7 @@ class App {
               utils.greenColor("Birinchi valyuta qiymatini kiriting"));
           double amount = double.parse(stdin.readLineSync()!);
           utils.printModel(utils.greenColor(
-              "$amount $valyutaBir ${(currencyTypes[valyutaIkki] / currencyTypes[valyutaBir] * amount).toStringAsFixed(2)} $valyutaIkki ga teng ✅"));
+              "$amount $valyutaBir ${(currencyTypes[valyutaIkki]["price"] / currencyTypes[valyutaBir]["price"] * amount).toStringAsFixed(2)} $valyutaIkki ga teng ✅"));
           serviceView(currencyTypes);
         } else {
           utils.printModel(utils.redColor(valyutaXato));

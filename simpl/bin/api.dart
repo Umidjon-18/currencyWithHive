@@ -4,7 +4,10 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
 
+import 'currency_model.dart';
+
 class API {
+  var currencyBoxName = "currency_box";
   connectAPI(currencyBox) async {
     var response = await http.get(Uri.parse('https://pokur.su/usd/'));
     if (response.statusCode == 200) {
@@ -14,11 +17,11 @@ class API {
           .getElementsByTagName("tbody")[0]
           .getElementsByTagName("tr");
       var price = document
-          .map((e) => e
+          .map((e) => double.parse(e
               .getElementsByTagName("a")[1]
               .text
               .replaceAll(",", ".")
-              .replaceAll(" ", ""))
+              .replaceAll(" ", "")))
           .toList();
       var curIcon = document
           .map((e) => e.getElementsByTagName("img")[0].attributes["src"])
@@ -28,17 +31,13 @@ class API {
       var curCode = document
           .map((e) => e.getElementsByTagName("td")[2].text.toLowerCase())
           .toList();
-
-      for (int i = 0; i < 179; i++) {
-        var object = {
-          "curName": curName[i],
-          "price": price[i],
-          "curIcon": curIcon[i]
-        };
-        currencyBox.put(curCode[i], jsonEncode(object));
-        currencyBox.put("date",
-            "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}");
+      for (int i = 0; i < curCode.length; i++) {
+        CurrencyModel object =
+            CurrencyModel(curName: curName[i], price: price[i], curIcon: curIcon[i]);
+        await currencyBox.put(curCode[i], jsonEncode(object.toJson()));
       }
+      await currencyBox.put("date",
+          "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}");
     } else {
       print("Ulanishda xatolik bor\n\n Status Code : ${response.statusCode}");
     }
@@ -48,23 +47,18 @@ class API {
     var today =
         "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}";
     var curObject = {};
-    var currencyBoxName = "currency_box";
     var currencyBox = await Hive.openBox(currencyBoxName);
     if (currencyBox.get("date") == today) {
       currencyBox.keys.forEach((element) {
         if (element != "date") {
-          curObject.addAll({
-            element: double.parse(jsonDecode(currencyBox.get(element))["price"])
-          });
+          curObject.addAll({element: jsonDecode(jsonDecode(currencyBox.get(element)))});
         }
       });
     } else {
       await connectAPI(currencyBox);
       currencyBox.keys.forEach((element) {
         if (element != "date") {
-          curObject.addAll({
-            element: double.parse(jsonDecode(currencyBox.get(element))["price"])
-          });
+          curObject.addAll({element: jsonDecode(jsonDecode(currencyBox.get(element)))});
         }
       });
     }

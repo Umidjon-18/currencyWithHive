@@ -11,7 +11,8 @@ class Utils {
         '''|                                                                     |
 -----------------------------------------------------------------------'''));
   }
-    void printModel2(Colorize text) {
+
+  void printModel2(Colorize text) {
     print(greenColor(
         '''-----------------------------------------------------------------------------------------------------------------'''));
     print("  $text");
@@ -33,7 +34,7 @@ class Utils {
 }
 
 extension MyDateExtension on DateTime {
-  DateTime getDateOnly(){
+  DateTime getDateOnly() {
     return DateTime(this.year, this.month, this.day);
   }
 }
