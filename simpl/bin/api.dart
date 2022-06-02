@@ -43,7 +43,7 @@ class API {
     }
   }
 
-  Map curType() async {
+  Map<String, dynamic> curType() async {
     var today =
         "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}";
     var curObject = {};
